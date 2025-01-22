@@ -1,0 +1,297 @@
+.navbar-brand svg {
+  vertical-align: text-bottom;
+  margin-right: 0.5rem;
+}
+
+.voicemail-item {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.voicemail-item:hover {
+  background-color: #f8f9fa;
+}
+
+.voicemail-item.active {
+  background-color: #e9ecef;
+}
+
+.voicemail-item.new {
+  background-color: #e7f5ff;
+}
+
+.voicemail-item.new:hover {
+  background-color: #d0ebff;
+}
+
+.audio-player {
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.metadata-list {
+  list-style: none;
+  padding: 0;
+}
+
+.metadata-list li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.metadata-list li:last-child {
+  border-bottom: none;
+}
+
+.badge-new {
+  background-color: #0d6efd;
+  color: white;
+}
+
+.action-buttons {
+  margin-top: 1rem;
+}
+
+.action-buttons .btn {
+  margin-right: 0.5rem;
+}
+
+.project-item {
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.project-item:hover {
+  background-color: #f8f9fa;
+}
+
+.project-item.active {
+  background-color: #e9ecef;
+  border-left: 3px solid #0d6efd;
+}
+
+.catch-all-project {
+    background-color: #f8f9fa;
+    border-left: 4px solid #6c757d;
+}
+
+.catch-all-project .project-name {
+    font-weight: 500;
+    color: #495057;
+}
+
+.catch-all-project:hover {
+    background-color: #e9ecef;
+}
+
+.catch-all-settings {
+    padding: 1rem;
+    margin-top: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    background-color: #f8f9fa;
+}
+
+.catch-all-settings:not(.show) {
+    display: none;
+}
+
+#did-inputs .input-group {
+  margin-bottom: 0.5rem;
+}
+
+.settings-form label {
+  font-weight: 500;
+}
+
+.view {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.table-responsive {
+  margin: -0.5rem;
+}
+
+.nav-link {
+  position: relative;
+}
+
+.toast-container {
+  z-index: 1056;
+}
+
+.toast {
+  min-width: 200px;
+}
+
+.bg-success {
+  background-color: #198754 !important;
+}
+
+.bg-error {
+  background-color: #dc3545 !important;
+}
+
+.bg-info {
+  background-color: #0dcaf0 !important;
+}
+
+.help-icon {
+  cursor: help;
+  color: #6c757d;
+  transition: color 0.2s;
+}
+
+.help-icon:hover {
+  color: #0d6efd;
+}
+
+.setup-steps .step {
+  border-left: 3px solid #0d6efd;
+  padding-left: 1rem;
+}
+
+.features-list .feature {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 0.25rem;
+}
+
+.feature h6 {
+  color: #0d6efd;
+}
+
+.tooltip {
+  font-size: 0.875rem;
+}
+
+.tooltip-inner {
+  max-width: 300px;
+  padding: 0.5rem 1rem;
+}
+
+#nav-help {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#help-modal .modal-body {
+  padding: 1.5rem;
+}
+
+#help-modal .nav-tabs {
+  border-bottom: 2px solid #dee2e6;
+}
+
+#help-modal .nav-link.active {
+  border-bottom: 2px solid #0d6efd;
+}
+
+#help-modal .accordion-button:not(.collapsed) {
+  background-color: #e7f1ff;
+  color: #0d6efd;
+}
+
+/* API Playground Styles */
+#endpoint-list .list-group-item {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+#endpoint-list .list-group-item:hover {
+  background-color: #f8f9fa;
+}
+
+#endpoint-list .list-group-item.active {
+  background-color: #e9ecef;
+  border-left: 3px solid #0d6efd;
+}
+
+#api-request-form .input-group {
+  margin-bottom: 0.5rem;
+}
+
+#request-body {
+  font-family: monospace;
+  font-size: 0.875rem;
+}
+
+#response-body {
+  font-family: monospace;
+  font-size: 0.875rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.endpoint-method {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+.endpoint-method.get { background-color: #d1e7dd; color: #0f5132; }
+.endpoint-method.post { background-color: #cfe2ff; color: #084298; }
+.endpoint-method.patch { background-color: #fff3cd; color: #664d03; }
+.endpoint-method.delete { background-color: #f8d7da; color: #842029; }
+
+.param-docs {
+  font-size: 0.875rem;
+  color: #6c757d;
+  margin-top: 0.25rem;
+}
+
+#response-status.success { color: #198754; }
+#response-status.error { color: #dc3545; }
+
+.add-dnc-btn {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: white;
+}
+
+.add-dnc-btn:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+
+.add-dnc-btn[disabled] {
+  background-color: #e4606d;
+  border-color: #e4606d;
+}
+
+.dnc-modal .modal-header {
+  background-color: #dc3545;
+  color: white;
+}
+
+.dnc-modal .notes-field {
+  min-height: 100px;
+  margin-top: 10px;
+}
+
+.dnc-confirmation {
+  font-weight: bold;
+  color: #dc3545;
+  margin-bottom: 15px;
+}

@@ -1,0 +1,579 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi-Project Voicemail System</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <i class="bi bi-telephone-inbound me-2"></i>
+        Enterprise Voicemail
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="#" id="nav-dashboard">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" id="nav-projects">Projects</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" id="nav-api">API Playground</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" id="nav-settings">Settings</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" id="nav-help">
+              <i class="bi bi-question-circle"></i> Help
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid py-4">
+    <!-- Dashboard View -->
+    <div id="dashboard-view" class="view">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">
+                Projects
+                <i class="bi bi-info-circle text-muted ms-1" 
+                   data-bs-toggle="tooltip" 
+                   data-bs-placement="right"
+                   title="Create and manage multiple voicemail projects, each with their own DIDs and settings"></i>
+              </h5>
+              <button class="btn btn-sm btn-primary" id="new-project-btn"
+                      data-bs-toggle="tooltip" 
+                      data-bs-placement="left"
+                      title="Create a new voicemail project">
+                <i class="bi bi-plus-lg"></i> New Project
+              </button>
+            </div>
+            <div class="list-group list-group-flush" id="project-list">
+              <!-- Projects will be populated here -->
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h5 class="mb-0">
+                DIDs
+                <i class="bi bi-info-circle text-muted ms-1" 
+                   data-bs-toggle="tooltip" 
+                   data-bs-placement="right"
+                   title="Direct Inward Dial numbers assigned to this project"></i>
+              </h5>
+            </div>
+            <div class="list-group list-group-flush" id="did-list">
+              <!-- DIDs will be populated here -->
+              <template id="did-item-template">
+                <div class="list-group-item">
+                  <div class="d-flex w-100 justify-content-between align-items-center">
+                    <div>
+                      <span class="did-number"></span>
+                      <div class="small text-muted">
+                        <span class="did-dates"></span>
+                        <div class="did-expiry"></div>
+                      </div>
+                    </div>
+                    <div class="btn-group">
+                      <button class="btn btn-sm btn-outline-danger archive-did-btn" title="Archive DID">
+                        <i class="bi bi-archive"></i>
+                      </button>
+                      <button class="btn btn-sm btn-outline-secondary edit-did-btn" title="Edit DID">
+                        <i class="bi bi-pencil"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="progress mt-2 did-progress" style="height: 3px;">
+                    <div class="progress-bar" role="progressbar"></div>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="mb-0">
+                Voicemail List
+                <i class="bi bi-info-circle text-muted ms-1" 
+                   data-bs-toggle="tooltip" 
+                   data-bs-placement="right"
+                   title="View and manage voicemails for the selected project"></i>
+              </h5>
+            </div>
+            <div class="list-group list-group-flush" id="voicemail-list">
+              <!-- Voicemails will be populated here -->
+            </div>
+          </div>
+        </div>
+        <div class="col-md-5">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="mb-0">Voicemail Details</h5>
+            </div>
+            <div class="card-body" id="voicemail-details">
+              <!-- Voicemail details will be shown here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project Management View -->
+    <div id="projects-view" class="view d-none">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">Project Management</h5>
+              <button class="btn btn-primary" id="create-project-btn">
+                <i class="bi bi-plus-lg"></i> Create Project
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-hover" id="projects-table">
+                  <thead>
+                    <tr>
+                      <th>Project Name</th>
+                      <th>DIDs</th>
+                      <th>New Messages</th>
+                      <th>Total Messages</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Project rows will be populated here -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings View -->
+    <div id="settings-view" class="view d-none">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="mb-0">
+                System Settings
+                <i class="bi bi-info-circle text-muted ms-1" 
+                   data-bs-toggle="tooltip" 
+                   data-bs-placement="right"
+                   title="Configure system-wide settings including notifications and defaults"></i>
+              </h5>
+            </div>
+            <div class="card-body">
+              <form id="settings-form">
+              <!-- Settings form will be populated here -->
+              <div class="mb-3">
+                <h6>Catch-All Voicemail</h6>
+                <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="catchAllEnabled" name="catchAllEnabled">
+                <label class="form-check-label" for="catchAllEnabled">Enable catch-all voicemail box</label>
+                </div>
+                <small class="text-muted">When enabled, unrecognized DIDs will be directed to a general voicemail box.</small>
+              </div>
+
+              <div class="mb-3 catch-all-settings">
+                <label class="form-label">Catch-All Greeting</label>
+                <textarea class="form-control" name="catchAllGreeting" rows="3" 
+                    placeholder="Enter greeting message for catch-all voicemail..."></textarea>
+                <small class="text-muted">This message will be played when an unrecognized DID is called.</small>
+              </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- API Playground View -->
+    <div id="api-view" class="view d-none">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card mb-3">
+            <div class="card-header">
+              <h5 class="mb-0">
+                API Endpoints
+                <i class="bi bi-info-circle text-muted ms-1" 
+                   data-bs-toggle="tooltip" 
+                   data-bs-placement="right"
+                   title="Browse and test available API endpoints"></i>
+              </h5>
+            </div>
+            <div class="card-body">
+              <div class="list-group" id="endpoint-list">
+                <!-- Endpoints will be populated here -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="mb-0">Request Builder</h5>
+            </div>
+            <div class="card-body">
+              <form id="api-request-form">
+                <div class="mb-3">
+                  <label class="form-label">Endpoint</label>
+                  <div class="input-group">
+                    <select class="form-select" id="request-method">
+                      <option value="GET">GET</option>
+                      <option value="POST">POST</option>
+                      <option value="PATCH">PATCH</option>
+                      <option value="DELETE">DELETE</option>
+                    </select>
+                    <input type="text" class="form-control" id="request-url" placeholder="/api/endpoint">
+                  </div>
+                </div>
+                
+                <div class="mb-3">
+                  <label class="form-label">Parameters</label>
+                  <div id="params-container">
+                    <div class="input-group mb-2">
+                      <input type="text" class="form-control" placeholder="Key" name="param-key[]">
+                      <input type="text" class="form-control" placeholder="Value" name="param-value[]">
+                      <button type="button" class="btn btn-outline-secondary add-param-btn">
+                        <i class="bi bi-plus-lg"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Headers</label>
+                  <div id="headers-container">
+                    <div class="input-group mb-2">
+                      <input type="text" class="form-control" placeholder="Key" name="header-key[]">
+                      <input type="text" class="form-control" placeholder="Value" name="header-value[]">
+                      <button type="button" class="btn btn-outline-secondary add-header-btn">
+                        <i class="bi bi-plus-lg"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Request Body</label>
+                  <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="pretty-print">
+                    <label class="form-check-label">Pretty Print JSON</label>
+                  </div>
+                  <textarea class="form-control" id="request-body" rows="5"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Send Request</button>
+              </form>
+
+              <div class="mt-4">
+                <h6>Response</h6>
+                <div class="card bg-light">
+                  <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>Status: <span id="response-status"></span></span>
+                    <span>Time: <span id="response-time"></span></span>
+                  </div>
+                  <div class="card-body">
+                    <pre id="response-body" class="mb-0"></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Project Modal -->
+  <div class="modal fade" id="new-project-modal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Create New Project</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="new-project-form">
+            <div class="mb-3">
+              <label class="form-label">Project Name</label>
+              <input type="text" class="form-control" name="projectName" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Description</label>
+              <textarea class="form-control" name="description" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">DIDs</label>
+              <div id="did-inputs">
+                <div class="input-group mb-2">
+                  <input type="tel" class="form-control" name="dids[]" placeholder="+1234567890">
+                  <button type="button" class="btn btn-outline-secondary add-did-btn">
+                    <i class="bi bi-plus-lg"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Bulk DID Entry</label>
+              <textarea class="form-control" name="bulkDids" rows="4" 
+                placeholder="Enter DIDs one per line or comma separated..."></textarea>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Start Date</label>
+                  <input type="date" class="form-control" name="didStartDate">
+                </div>
+              </div>
+              <div class="col-md-6">  
+                <div class="mb-3">
+                  <label class="form-label">End Date (Optional)</label>
+                  <input type="date" class="form-control" name="didEndDate">
+                  <small class="text-muted">DIDs will be archived after end date</small>
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Greeting Message</label>
+              <select class="form-select" name="greetingType">
+                <option value="default">Default System Greeting</option>
+                <option value="custom">Custom Greeting</option>
+              </select>
+              <div class="mt-2 d-none" id="custom-greeting-upload">
+                <input type="file" class="form-control" name="greetingFile" accept="audio/*">
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="create-project-submit">Create Project</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="share-modal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Share Voicemail</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="share-form">
+            <input type="hidden" id="share-voicemail-id">
+            <div class="mb-3">
+              <label class="form-label">Recipients (comma-separated emails)</label>
+              <input type="text" class="form-control" id="share-recipients" 
+                     placeholder="user1@example.com, user2@example.com">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Message (optional)</label>
+              <textarea class="form-control" id="share-message" rows="3"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="share-submit">Share</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="help-modal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Help Center</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <ul class="nav nav-tabs" id="helpTabs" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="faq-tab" data-bs-toggle="tab" href="#faq">FAQ</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="setup-tab" data-bs-toggle="tab" href="#setup">Setup Guide</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="features-tab" data-bs-toggle="tab" href="#features">Features</a>
+            </li>
+          </ul>
+          
+          <div class="tab-content mt-3">
+            <div class="tab-pane fade show active" id="faq">
+              <h5>Frequently Asked Questions</h5>
+              <div class="accordion" id="faqAccordion">
+                <div class="accordion-item">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                      How do I create a new project?
+                    </button>
+                  </h2>
+                  <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                      Click the "New Project" button in the Projects panel. Fill out the project details including name, description,
+                      and assign DIDs. You can also configure a custom greeting message for each project.
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="accordion-item">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                      How do I manage DIDs?
+                    </button>
+                  </h2>
+                  <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                      DIDs can be added when creating a project or edited later in project settings. Each DID must be unique
+                      across all projects. The system supports multiple DIDs per project for flexibility.
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="accordion-item">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                      How do notifications work?
+                    </button>
+                  </h2>
+                  <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                      Configure notification settings in the Settings panel. You can set up email and SMS notifications for new
+                      voicemails. Enable transcription to receive message transcripts in notifications.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="tab-pane fade" id="setup">
+              <h5>Setup Guide</h5>
+              <div class="setup-steps">
+                <div class="step mb-4">
+                  <h6>1. Initial Configuration</h6>
+                  <p>Before you begin using the system:</p>
+                  <ul>
+                    <li>Configure your SIP trunk provider settings</li>
+                    <li>Set up notification preferences</li>
+                    <li>Configure default greetings and message settings</li>
+                  </ul>
+                </div>
+                
+                <div class="step mb-4">
+                  <h6>2. Creating Projects</h6>
+                  <p>For each department or use case:</p>
+                  <ul>
+                    <li>Create a new project with a descriptive name</li>
+                    <li>Assign relevant DIDs to the project</li>
+                    <li>Configure project-specific greetings if needed</li>
+                  </ul>
+                </div>
+                
+                <div class="step mb-4">
+                  <h6>3. Managing Voicemails</h6>
+                  <p>Best practices for voicemail management:</p>
+                  <ul>
+                    <li>Regularly check new messages</li>
+                    <li>Use notes feature to track follow-ups</li>
+                    <li>Archive or delete processed messages</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div class="tab-pane fade" id="features">
+              <h5>Feature Guide</h5>
+              <div class="features-list">
+                <div class="feature mb-3">
+                  <h6>Multi-Project Support</h6>
+                  <p>Create and manage multiple voicemail projects, each with unique settings and DIDs.</p>
+                </div>
+                
+                <div class="feature mb-3">
+                  <h6>DNC List Integration</h6>
+                  <p>Easily add numbers to your Do Not Call list with one click. Syncs with your SQL database.</p>
+                </div>
+                
+                <div class="feature mb-3">
+                  <h6>Voicemail Sharing</h6>
+                  <p>Share voicemails via email with team members. Includes audio file and optional transcription.</p>
+                </div>
+                
+                <div class="feature mb-3">
+                  <h6>Note Management</h6>
+                  <p>Add and track notes for each voicemail. Perfect for follow-up management.</p>
+                </div>
+                
+                <div class="feature mb-3">
+                  <h6>Custom Greetings</h6>
+                  <p>Set unique greeting messages for each project or use the system default.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DNC Confirmation Modal -->
+  <div class="modal fade dnc-modal" id="dnc-modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add to DNC List</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="dnc-voicemail-id">
+                <div class="dnc-confirmation">
+                    Are you sure you want to add <span id="dnc-phone-number"></span> to the DNC list?
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Notes</label>
+                    <textarea class="form-control notes-field" id="dnc-notes" 
+                            placeholder="Add any notes about this DNC entry..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirm-dnc">
+                    Add to DNC
+                </button>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

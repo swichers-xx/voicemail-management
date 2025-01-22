@@ -1,0 +1,74 @@
+services:
+  voicemail:
+    build: .
+    ports:
+      - "5000:5000"
+      - "5060:5060/udp"
+    volumes:
+      - voicemail_data:/var/spool/asterisk/voicemail
+      - custom_greetings:/var/lib/asterisk/sounds/custom
+      - ./projects.json:/app/projects.json
+      - ./settings.json:/app/settings.json
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
+      - SQL_SERVER_HOST=db
+      - SQL_SERVER_USER=sa
+      - SQL_SERVER_PASSWORD_FILE=/run/secrets/sql_server_password
+      - SQL_SERVER_DB=voicemail
+      - JWT_SECRET_KEY_FILE=/run/secrets/jwt_secret_key
+      - ALLOWED_IPS=127.0.0.1,192.168.1.0/24
+      - RATE_LIMIT=100
+      - RATE_LIMIT_PERIOD=3600
+    secrets:
+      - sql_server_password
+      - jwt_secret_key
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD_FILE=/run/secrets/sql_server_password
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $(cat /run/secrets/sql_server_password) -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    secrets:
+      - sql_server_password
+
+  redis:
+    image: redis:alpine
+    command: redis-server --requirepass $(cat /run/secrets/redis_password)
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "$(cat /run/secrets/redis_password)", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    secrets:
+      - redis_password
+
+volumes:
+  voicemail_data:
+  custom_greetings:
+  mssql_data:
+  redis_data:
+
+secrets:
+  sql_server_password:
+    file: ./secrets/sql_server_password
+  jwt_secret_key:
+    file: ./secrets/jwt_secret_key
+  redis_password:
+    file: ./secrets/redis_password
